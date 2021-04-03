@@ -1,0 +1,16 @@
+{
+    "name": "FB Friend suggestions blocker",
+    "description": "Block all Facebook friend suggestions !",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": ["storage", "activeTab", "scripting"],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+          "matches": ["https://www.facebook.com/*"],
+          "js": ["script.js"]
+        }
+      ]
+  }
