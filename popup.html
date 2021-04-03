@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="popup.css">
-  </head>
-  <body>
-    <h1>Display elements</h1>
-    <div class="choices">
-      <div class="row"><p>Stories</p> <input class="checkbox" type="checkbox" id="stories"></div>
-      <div class="row"><p>Friends suggestions</p> <input class="checkbox" type="checkbox" id="friends-suggestions"></div>
+
+<head>
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <div class="app-title">
+    <img src="./128.png" width="50" height="50" alt="logo" />
+    <h1>GNR</h1>
+  </div>
+  <img class="fb-logo" src="https://is.gd/WV5EFW" alt="FB logo" width="28" height="28" />
+  <h2>Display elements</h2>
+  <div class="choices">
+    <div class="row" id="hide-stories-row">
+      <p>Stories</p> <input id="hide-stories-checkbox" class="checkbox" type="checkbox">
     </div>
-    <script src="popup.js"></script>
-  </body>
+    <div class="row" id="hide-friends-suggestions-row">
+      <p>Friends suggestions</p> <input id="hide-friends-suggestions-checkbox" class="checkbox" type="checkbox">
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+
 </html>
