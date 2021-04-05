@@ -23,14 +23,6 @@ function getElementByXpath(path) {
 var storiesClassName = "d2edcug0 e3xpq0al v8c10jal ejjq64ki";
 var stories =  document.getElementsByClassName(storiesClassName);
 
-var friendsSuggestionsClassName = "dati1w0a e5nlhep0 hv4rvrfc pybr56ya i1fnvgqd btwxx1t3 j83agx80";
-var friendsSuggestions =  document.getElementsByClassName(friendsSuggestionsClassName);
-console.log(friendsSuggestions);
-for(let i=0; i<friendsSuggestions.length; i++){
-    console.log(i + friendsSuggestions[i]);
-    hideHTMLElement(friendsSuggestions[i]);
-}
-
 hideHTMLElement(stories);
 
 const getSuggestionsDiv = () => {
@@ -53,4 +45,4 @@ setInterval(() => {
         console.log(suggestionsDiv);
         hideHTMLElement(suggestionsDiv);
     }
-}, 10000);
+}, 2000);
