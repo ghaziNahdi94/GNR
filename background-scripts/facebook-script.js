@@ -78,6 +78,17 @@ class HtmlElement {
 /****************************************************************************************
  * Function
  ****************************************************************************************/
+const saveValue = (key, value) => {
+    chrome.storage.sync.set({key: value}, function() {
+      });
+};
+
+const loadValue = (key) => {      
+    chrome.storage.sync.get(['key'], function(result) {
+        console.log(result);
+    });
+};
+
 const hideStories = () => {
     var storiesClassName = "d2edcug0 e3xpq0al v8c10jal ejjq64ki";
     const stories = HtmlElementsSearcher.searchElementByClassName(storiesClassName, 0);
