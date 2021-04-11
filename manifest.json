@@ -1,21 +1,21 @@
 {
-    "name": "FB Friend suggestions blocker",
-    "description": "Block all Facebook friend suggestions !",
+    "name": "Zones Blocker",
+    "description": "Block Zones in websites !",
     "version": "1.0",
     "manifest_version": 3,
     "permissions": ["storage", "activeTab", "scripting"],
     "action": {
-        "default_popup": "popup.html"
+        "default_popup": "./popups/main/main-popup.html"
     },
     "icons": {
-      "16": "16.png",
-      "48": "48.png",
-      "128": "128.png"
+      "16": "/assets/icons/16.png",
+      "48": "/assets/icons/48.png",
+      "128": "/assets/icons/128.png"
     },
     "content_scripts": [
         {
           "matches": ["https://www.facebook.com/*"],
-          "js": ["script.js"]
+          "js": ["/background-scripts/facebook-script.js"]
         }
       ]
   }
