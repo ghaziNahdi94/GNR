@@ -35,38 +35,55 @@ class FacebookChoice {
 
     setChecked(isChecked) {
         this.checkbox.checked = isChecked;
-        this.dataConfigurations.saveConfiguration(this.configurationKey, isChecked);
+        this.dataConfigurations.saveConfigurationByKey(this.configurationKey, isChecked);
     }
 }
 class DataConfigurations {
-    configurations = {};
+    configurations = {hideStoriesKey: false, hideFriendSuggestionsKey: false, hideAdsKey: false};
 
     constructor(configurations) {
         this.configurations = configurations;
     }
 
     findConfigurationByKey(key) {
-        for(let i=0; i<this.configurations.length; i++) {
-            if(this.configurations[i].key === key) {
-                return this.configurations[i];
+        for(const configuration of this.configurations){
+            if(configuration.key === key) {
+                return this.configuration;
             }
         }
         return null;
     }
 
-    saveConfiguration(key, value) {
-        this.configurations[key] = value;
-        chrome.storage.sync.set(this.configurations);
+    saveConfigurationByKey(key, value) {
+        this.configurations = {
+            ...this.configurations,
+            [key]: value
+        };
+
+        this.saveConfiguration();
+    }
+
+    saveConfiguration() {
+        chrome.storage.sync.set({config: {...this.configurations}});
     }
 
     loadConfigurations() {
         const _this = this;
-        chrome.storage.sync.get([], function(result) {
-            _this.configurations = result;
-            console.log(result);
-        });
+        setInterval(() => {
+            chrome.storage.sync.get("config", function(result) {
+                if(Object.entries(result).length === 0){
+                    _this.saveConfiguration();
+                } else {
+                    _this.configurations = {
+                        hideStoriesKey: result?.config?.hideStoriesKey, 
+                        hideFriendSuggestionsKey: result?.config?.hideFriendSuggestionsKey, 
+                        hideAdsKey: result?.config?.hideAdsKey
+                    };
+                }
 
-        setInterval(() => console.log(this.configurations), 5000);
+                console.log(_this.configurations);
+            });
+        }, 5000);
     }
 }
 
@@ -74,32 +91,27 @@ class DataConfigurations {
  * Function
  ****************************************************************************************/
 const initFacebookChoiceValueByKey = (dataConfigurations, facebookChoice, key) => {
-    dataConfigurations.loadConfigurations();
-    //console.log(dataConfigurations.configurations);
-    
 };
 
-const init = (dataConfigurations) => {
-    initFacebookChoiceValueByKey(dataConfigurations, storiesFacebookChoice, hideStoriesKey)
-    initFacebookChoiceValueByKey(dataConfigurations, friendsSuggestionsFacebookChoice, hideFriendSuggestionsKey)
-    initFacebookChoiceValueByKey(dataConfigurations, adsFacebookChoice, hideAdsKey)
+const init = (dataConfiguration) => {
+    dataConfiguration.loadConfigurations();
 };
 
 /****************************************************************************************
  * Main
  ****************************************************************************************/
-const dataConfigurations = new DataConfigurations({hideStoriesKey: false, hideFriendSuggestionsKey: false, hideAdsKey: false});
+const dataConfiguration = new DataConfigurations({hideStoriesKey: false, hideFriendSuggestionsKey: false, hideAdsKey: false});
 
 const hideStoriesRow = document.getElementById("hide-stories-row");
 const hideStoriesCheckbox = document.getElementById("hide-stories-checkbox");
-const storiesFacebookChoice = new FacebookChoice(dataConfigurations, hideStoriesKey, hideStoriesRow, hideStoriesCheckbox);
+const storiesFacebookChoice = new FacebookChoice(dataConfiguration, hideStoriesKey, hideStoriesRow, hideStoriesCheckbox);
 
 const hideFriendsSuggestionsRow = document.getElementById("hide-friends-suggestions-row");
 const hideFriendsSuggestionsCheckbox = document.getElementById("hide-friends-suggestions-checkbox");
-const friendsSuggestionsFacebookChoice = new FacebookChoice(dataConfigurations, hideFriendSuggestionsKey, hideFriendsSuggestionsRow, hideFriendsSuggestionsCheckbox);
+const friendsSuggestionsFacebookChoice = new FacebookChoice(dataConfiguration, hideFriendSuggestionsKey, hideFriendsSuggestionsRow, hideFriendsSuggestionsCheckbox);
 
 const adsRow = document.getElementById("ads-row");
 const adsCheckbox = document.getElementById("ads-checkbox");
-const adsFacebookChoice = new FacebookChoice(dataConfigurations, hideAdsKey, adsRow, adsCheckbox);
+const adsFacebookChoice = new FacebookChoice(dataConfiguration, hideAdsKey, adsRow, adsCheckbox);
 
-init(dataConfigurations);
+init(dataConfiguration);
