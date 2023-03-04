@@ -3,6 +3,25 @@
 /****************************************************************************************
  * Class
  ****************************************************************************************/
+class GoogleStorage {
+    static save(key, object) {
+      chrome.storage.sync.set({ config: { ...this.configurations } });
+      chrome.storage.sync.set({ [key]: { ...object } });
+    }
+  
+    static onLoad(key, method) {
+      chrome.storage.sync.get(key, (object) => {
+        method(object);
+      });
+    }
+  
+    static displayConfigByKey(key) {
+      GoogleStorage.onLoad(key, (config) => {
+        console.log(config);
+      });
+    }
+  }
+
 class ElementStyle {
     constructor(element) {
         this.element = element;
@@ -29,6 +48,10 @@ class ElementHider {
 class HtmlElementsSearcher {
     static searchElementsByClassName(className) {
         return new HtmlElement(document.getElementsByClassName(className));
+    }
+
+    static searchElementByQuerySelector(querySelector) {
+        return new HtmlElement(document.querySelector(querySelector));
     }
 
     static searchElementByClassName(className, index) {
@@ -85,14 +108,23 @@ const saveValue = (key, value) => {
 
 const loadValue = (key) => {      
     chrome.storage.sync.get(['key'], function(result) {
-        console.log(result);
     });
 };
 
 const hideStories = () => {
-    var storiesClassName = "d2edcug0 e3xpq0al v8c10jal ejjq64ki";
-    const stories = HtmlElementsSearcher.searchElementByClassName(storiesClassName, 0);
+    let querySelector = '[aria-label="barre des stories"]';
+    const stories = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
     ElementHider.hide(stories.element);
+
+    querySelector = '[aria-label="Barre des reels"]';
+    const reels = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
+    ElementHider.hide(reels.element);
+};
+
+const hideReels = () => {
+    let querySelector = '[aria-label="Reels"]';
+    const reels = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
+    ElementHider.hide(reels.element);
 };
 
 const hideFriendsSuggestions  = () => {
@@ -120,12 +152,19 @@ const hideAds = () => {
 /****************************************************************************************
  * Main
  ****************************************************************************************/
- hideStories();
- hideFriendsSuggestions();
- hideAds();
+let configurations = null;
 
-setInterval(() => {
-    hideStories();
-    hideFriendsSuggestions();
-    hideAds();
-}, 3000);
+GoogleStorage.onLoad("config", (result) => {
+    configurations = {
+      hideStoriesKey: result?.config?.hideStoriesKey,
+      hideFriendSuggestionsKey: result?.config?.hideFriendSuggestionsKey,
+      hideAdsKey: result?.config?.hideAdsKey,
+    };
+
+    setInterval(() => {
+        configurations?.hideStoriesKey && hideStories();
+        hideReels();
+        hideFriendsSuggestions();
+        hideAds();
+    }, 3000);
+}); 
