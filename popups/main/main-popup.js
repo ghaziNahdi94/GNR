@@ -4,6 +4,7 @@
  * Storage Data keys
  ****************************************************************************************/
 const hideStoriesKey = "hideStoriesKey";
+const hideReelsKey = "hideReelsKey";
 const hideFriendSuggestionsKey = "hideFriendSuggestionsKey";
 const hideAdsKey = "hideAdsKey";
 
@@ -57,6 +58,7 @@ class FacebookChoice {
 class DataConfigurations {
   configurations = {
     hideStoriesKey: false,
+    hideReelsKey: false,
     hideFriendSuggestionsKey: false,
     hideAdsKey: false,
   };
@@ -93,6 +95,7 @@ class DataConfigurations {
     GoogleStorage.onLoad("config", (result) => {
       _this.configurations = {
         hideStoriesKey: result?.config?.hideStoriesKey,
+        hideReelsKey: result?.config?.hideReelsKey,
         hideFriendSuggestionsKey: result?.config?.hideFriendSuggestionsKey,
         hideAdsKey: result?.config?.hideAdsKey,
       };
@@ -117,33 +120,15 @@ const setChoicesConfig = (dataConfiguration, choices) => {
 
 const addCheckboxListener = (
   dataConfiguration,
-  storiesFacebookChoice,
-  friendsSuggestionsFacebookChoice,
-  adsFacebookChoice
+  choice
 ) => {
-  document.getElementById("hide-stories-row").onclick = () => {
-    const checkbox = document.getElementById("hide-stories-checkbox");
-    dataConfiguration.saveConfigurationByKey(
-      storiesFacebookChoice.configurationKey,
-      checkbox.checked
-    );
-  };
+  console.log("choice");
+  console.log(choice);
 
-  document.getElementById("hide-friends-suggestions-row").onclick = () => {
-    const checkbox = document.getElementById(
-      "hide-friends-suggestions-checkbox"
-    );
+  choice['row'].onclick = () => {
     dataConfiguration.saveConfigurationByKey(
-      friendsSuggestionsFacebookChoice.configurationKey,
-      checkbox.checked
-    );
-  };
-
-  document.getElementById("ads-row").onclick = () => {
-    const checkbox = document.getElementById("ads-checkbox");
-    dataConfiguration.saveConfigurationByKey(
-      adsFacebookChoice.configurationKey,
-      checkbox.checked
+      choice.configurationKey,
+      choice['checkbox'].checked
     );
   };
 };
@@ -153,6 +138,7 @@ const addCheckboxListener = (
  ****************************************************************************************/
 const dataConfiguration = new DataConfigurations({
   hideStoriesKey: false,
+  hideReelsKey: false,
   hideFriendSuggestionsKey: false,
   hideAdsKey: false,
 });
@@ -163,6 +149,14 @@ const storiesFacebookChoice = new FacebookChoice(
   hideStoriesKey,
   hideStoriesRow,
   hideStoriesCheckbox
+);
+
+const hideReelsRow = document.getElementById("hide-reels-row");
+const hideReelsCheckbox = document.getElementById("hide-reels-checkbox");
+const reelsFacebookChoice = new FacebookChoice(
+  hideReelsKey,
+  hideReelsRow,
+  hideReelsCheckbox,
 );
 
 const hideFriendsSuggestionsRow = document.getElementById(
@@ -183,13 +177,12 @@ const adsFacebookChoice = new FacebookChoice(hideAdsKey, adsRow, adsCheckbox);
 
 setChoicesConfig(dataConfiguration, [
   storiesFacebookChoice,
+  reelsFacebookChoice,
   friendsSuggestionsFacebookChoice,
   adsFacebookChoice,
 ]);
 
-addCheckboxListener(
-  dataConfiguration,
-  storiesFacebookChoice,
-  friendsSuggestionsFacebookChoice,
-  adsFacebookChoice
-);
+addCheckboxListener(dataConfiguration, storiesFacebookChoice);
+addCheckboxListener(dataConfiguration, reelsFacebookChoice);
+addCheckboxListener(dataConfiguration, friendsSuggestionsFacebookChoice);
+addCheckboxListener(dataConfiguration, adsFacebookChoice);

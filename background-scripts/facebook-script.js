@@ -28,14 +28,16 @@ class ElementStyle {
     }
 
     putCssValueByAttribute(attribute, value) {
-        this.element.style[attribute] = value;
+        this.element['style'] && (this.element['style'][attribute] = value);
     }
 }
 
 class ElementHider {
     static hide(element) {
         const style = new ElementStyle(element);
-        element.style && style.putCssValueByAttribute("display", "none");
+        if(style) {
+            style.putCssValueByAttribute("display", "none");
+        }
     }
 
     static hideElements(elements) {
@@ -101,16 +103,6 @@ class HtmlElement {
 /****************************************************************************************
  * Function
  ****************************************************************************************/
-const saveValue = (key, value) => {
-    chrome.storage.sync.set({key: value}, function() {
-      });
-};
-
-const loadValue = (key) => {      
-    chrome.storage.sync.get(['key'], function(result) {
-    });
-};
-
 const hideStories = () => {
     let querySelector = '[aria-label="barre des stories"]';
     const stories = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
@@ -157,14 +149,20 @@ let configurations = null;
 GoogleStorage.onLoad("config", (result) => {
     configurations = {
       hideStoriesKey: result?.config?.hideStoriesKey,
+      hideReelsKey: result?.config?.hideReelsKey,
       hideFriendSuggestionsKey: result?.config?.hideFriendSuggestionsKey,
       hideAdsKey: result?.config?.hideAdsKey,
     };
 
+    configurations?.hideStoriesKey && hideStories();
+    configurations?.hideReelsKey && hideReels();
+    configurations?.hideFriendSuggestionsKey && hideFriendsSuggestions();
+    configurations?.hideAdsKey && hideAds();
+
     setInterval(() => {
         configurations?.hideStoriesKey && hideStories();
-        hideReels();
-        hideFriendsSuggestions();
-        hideAds();
+        configurations?.hideReelsKey && hideReels();
+        configurations?.hideFriendSuggestionsKey && hideFriendsSuggestions();
+        configurations?.hideAdsKey && hideAds();
     }, 3000);
 }); 
