@@ -108,7 +108,7 @@ const hideStories = () => {
     const stories = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
     ElementHider.hide(stories.element);
 
-    querySelector = '[aria-label="Barre des reels"]';
+    querySelector = '[aria-label="Reels"]';
     const reels = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
     ElementHider.hide(reels.element);
 };
