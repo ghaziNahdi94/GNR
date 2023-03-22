@@ -35,7 +35,7 @@ class ElementStyle {
 class ElementHider {
     static hide(element) {
         const style = new ElementStyle(element);
-        if(style) {
+        if(style && style.element) {
             style.putCssValueByAttribute("display", "none");
         }
     }
@@ -108,7 +108,7 @@ const hideStories = () => {
     const stories = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
     ElementHider.hide(stories.element);
 
-    querySelector = '[aria-label="Reels"]';
+    querySelector = '[aria-label="Barre des reels"]';
     const reels = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
     ElementHider.hide(reels.element);
 };
@@ -116,7 +116,10 @@ const hideStories = () => {
 const hideReels = () => {
     let querySelector = '[aria-label="Reels"]';
     const reels = HtmlElementsSearcher.searchElementByQuerySelector(querySelector);
-    ElementHider.hide(reels.element);
+    if(reels?.element) {
+        console.log(reels);
+        ElementHider.hide(reels.element);    
+    }
 };
 
 const hideFriendsSuggestions  = () => {
